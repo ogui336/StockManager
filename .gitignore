@@ -1,0 +1,12 @@
+# Ficheiros compilados da máquina virtual Java
+*.class
+/bin/
+
+# Configurações internas do Eclipse
+.classpath
+.project
+.settings/
+
+# O banco de dados (para não o enviar para o GitHub)
+*.db
+*.sqlite
