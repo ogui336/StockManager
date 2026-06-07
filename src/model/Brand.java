@@ -2,7 +2,7 @@ package model;
 
 public class Brand {
 	private int id;
-	private String name;
+	private String brandName;
 
 	// construtor vazio
 	public Brand() {
@@ -11,7 +11,7 @@ public class Brand {
 	// construtor completo
 	public Brand(int id, String name) {
 		this.id = id;
-		this.name = name;
+		this.brandName = name;
 	}
 
 	public int getId() {
@@ -23,11 +23,11 @@ public class Brand {
 	}
 
 	public String getName() {
-		return name;
+		return brandName;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.brandName = name;
 	}
 
 }
