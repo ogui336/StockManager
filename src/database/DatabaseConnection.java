@@ -3,6 +3,7 @@ package database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DatabaseConnection {
 	public static Connection getConnection() {
@@ -11,6 +12,10 @@ public class DatabaseConnection {
 			Class.forName("org.sqlite.JDBC");
 			Connection connection = DriverManager.getConnection(url);
 
+			try (Statement stmt = connection.createStatement()) {
+				stmt.execute("PRAGMA foreign_keys = ON;");
+
+			}
 			return connection;
 
 		} catch (ClassNotFoundException e) {
