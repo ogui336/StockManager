@@ -19,13 +19,10 @@ public class DatabaseConnection {
 			return connection;
 
 		} catch (ClassNotFoundException e) {
-			System.out.println("Erro: O arquivo .jar do SQLite não foi encontrado no Classpath!");
-			e.printStackTrace();
-			return null;
+		throw new RuntimeException("Erro crítico: Driver do SQLite não foi encontrado!", e);
+			
 		} catch (SQLException e) {
-			System.out.println("Erro ao tentar conectar com o banco de dados!");
-			e.printStackTrace();
-			return null;
+			throw new RuntimeException("Erro crítico: Falha ao conectar ao banco de dados stockmanager.db!", e);
 
 		}
 

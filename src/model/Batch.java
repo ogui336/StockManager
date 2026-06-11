@@ -1,21 +1,23 @@
 package model;
 
+import java.time.LocalDate;
+
 public class Batch {
 	
 	private int id; // PK
 	private String batchNumber; // Guarda o código identificador do lote  Ex: "LOTE-2026-01"
 	private int quantity; // Quantidade de unidades
-	private String expirationDate; // Data de validade do lote
-	private int productId; // FK
+	private LocalDate expirationDate; // Data de validade do lote
+	private Product product; // FK
 	
 	public Batch() {
 	}
 	
-	public Batch(String batchNumber, int quantity, String expirationDate, int productId) {
+	public Batch(String batchNumber, int quantity, LocalDate expirationDate, Product product) {
 		this.batchNumber = batchNumber;
 	    this.quantity = quantity;
 	    this.expirationDate = expirationDate;
-	    this.productId = productId;
+	    this.product = product;
 	}
 
 	public int getId() {
@@ -42,21 +44,20 @@ public class Batch {
 		this.quantity = quantity;
 	}
 
-	public String getExpirationDate() {
+	public LocalDate getExpirationDate() {
 		return expirationDate;
 	}
 
-	public void setExpirationDate(String expirationDate) {
+	public void setExpirationDate(LocalDate expirationDate) {
 		this.expirationDate = expirationDate;
 	}
 
-	public int getProductId() {
-		return productId;
+	public Product getProduct() {
+		return product;
 	}
 
-	public void setProductId(int productId) {
-		this.productId = productId;
+	public void setProduct(Product product) {
+		this.product = product;
 	}
-	
 	
 }

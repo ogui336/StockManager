@@ -5,7 +5,6 @@ public class Product {
 	private String barcode;
 	private String name;
 	private double price;
-	private int stockQuantity;
 	private Brand brand;
 
 	// construtor vazio
@@ -61,12 +60,6 @@ public class Product {
 		this.price = price;
 	}
 
-	public int getStockQuantity() {
-		return stockQuantity;
-	}
-
-	public void setStockQuantity(int stockQuantity) {
-		this.stockQuantity = stockQuantity;
-	}
+	
 
 }
