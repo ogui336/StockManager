@@ -5,9 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+import java.util.ArrayList;
+import java.util.List;
 
 import database.DatabaseConnection;
+import model.Brand;
 import model.Product;
 
 public class ProductDAO {
@@ -40,34 +42,48 @@ public class ProductDAO {
 		}
 	}
 
-	// Metod para buscar e mostrar os dados da tabela
-	public void listProducts() {
-		String sql = "SELECT p.id, p.barcode, p.name, p.price, b.name AS brand_name " + "FROM products p "
-				+ "INNER JOIN brands b ON p.brand_id = b.id";
+	// Retorna uma lista 
+		public List<Product> findAll() {
+			List<Product> list = new ArrayList<>();
+			
+			
+			String sql = "SELECT p.id AS product_id, p.name AS product_name, "
+					   + "b.id AS brand_id, b.name AS brand_name "
+					   + "FROM products p "
+					   + "INNER JOIN brands b ON p.brand_id = b.id";
 
-		try {
-			Connection conn = DatabaseConnection.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql);
-			ResultSet rs = pstmt.executeQuery();
+			
+			try (Connection conn = DatabaseConnection.getConnection();
+					PreparedStatement pstmt = conn.prepareStatement(sql);
+					ResultSet rs = pstmt.executeQuery()) {
 
-			while (rs.next()) {
-				int id = rs.getInt("id");
-				String barcode = rs.getString("barcode");
-				String name = rs.getString("name");
-				double price = rs.getDouble("price");
-				String brandName = rs.getString("brand_name");
+				while (rs.next()) {
+					// 1. Monta o objeto Brand
+					Brand brand = new Brand();
+					brand.setId(rs.getInt("brand_id"));
+					brand.setName(rs.getString("brand_name"));
 
-				System.out.println("ID: " + id + " | Código: " + barcode + " | Produto: " + name + " | Preço: R$ "
-						+ price + " | Marca: " + brandName);
+					// 2. Monta o objeto Product e injeta a Brand nele
+					Product product = new Product();
+					product.setId(rs.getInt("product_id"));
+					product.setName(rs.getString("product_name"));
+					
+					product.setPrice(rs.getDouble("price")); 
+					
+					product.setBrand(brand);
 
-				System.out.println("--------------------------------\n");
+					// 3. Adiciona na lista
+					list.add(product);
+				}
 
+			} catch (SQLException e) {
+				System.out.println("Erro ao listar os produtos.");
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			System.out.println("Erro ao listar os produtos.");
-			e.printStackTrace();
+			
+			return list;
 		}
 
 	}
 
-}
+
