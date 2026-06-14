@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import database.DatabaseConnection;
 import model.Batch;
+import java.time.LocalDate;
 
 public class BatchDAO {
 
@@ -17,8 +18,8 @@ public class BatchDAO {
 
 			stmt.setString(1, batch.getBatchNumber());
 			stmt.setInt(2, batch.getQuantity());
-			stmt.setString(3, batch.getExpirationDate());
-			stmt.setInt(4, batch.getProductId()); // Conecta com o ID do produto
+			stmt.setString(3, batch.getExpirationDate().toString());
+			stmt.setInt(4, batch.getProduct().getId()); // Conecta com o ID do produto
 
 			stmt.executeUpdate();
 			System.out.println("Sucesso: O lote '" + batch.getBatchNumber() + "' foi salvo no estoque!");

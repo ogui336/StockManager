@@ -5,8 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.SQLException;
-import java.sql.Connection;
+
 
 import database.DatabaseConnection;
 import model.Product;
@@ -18,9 +17,8 @@ public class ProductDAO {
 
 		String sql = "INSERT INTO products (barcode, name, price, brand_id) VALUES(?,?,?,?)";
 
-		try {
-			Connection conn = DatabaseConnection.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql);
+		try (Connection conn = DatabaseConnection.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 
 			pstmt.setString(1, product.getBarcode());
 			pstmt.setString(2, product.getName());
@@ -29,8 +27,13 @@ public class ProductDAO {
 			pstmt.setInt(4, product.getBrand().getId());
 
 			pstmt.executeUpdate();
-
-			System.out.println("Sucesso: O produto '" + product.getName() + "' foi salvo no estoque!");
+			
+			try(ResultSet generatedKeys = pstmt.getGeneratedKeys()){
+				if (generatedKeys.next()) {
+					product.setId(generatedKeys.getInt(1));
+				}
+				
+			}
 		} catch (SQLException e) {
 			System.out.println("Erro ao tentar salvar o produto no banco.");
 			e.printStackTrace();
