@@ -1,10 +1,12 @@
 package model;
 
+import java.math.BigDecimal;
+
 public class Product {
 	private int id;
 	private String barcode;
 	private String name;
-	private double price;
+	private BigDecimal price;
 	private Brand brand;
 
 	// construtor vazio
@@ -12,7 +14,7 @@ public class Product {
 	}
 
 	// construtor completo
-	public Product(int id, String barcode, String name, double price, Brand brand) {
+	public Product(int id, String barcode, String name, BigDecimal price, Brand brand) {
 		this.id = id;
 		this.barcode = barcode;
 		this.name = name;
@@ -52,11 +54,11 @@ public class Product {
 		this.name = name;
 	}
 
-	public double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 
