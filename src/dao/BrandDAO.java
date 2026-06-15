@@ -3,7 +3,6 @@ package dao;
 import model.Brand;
 
 import database.DatabaseConnection;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +14,7 @@ import java.util.List;
 
 
 public class BrandDAO {
-	//Insere uma nova MARCA no banco 
+	//Insere uma nova MARCA/brand no banco 
 	public void insertBrand(Brand brand) {
 		String sql = "INSERT INTO brands (name) VALUES (?)";
 
@@ -36,7 +35,7 @@ public class BrandDAO {
 		}
 	}
 	
-	// Retorna todas as marcas 
+	// Retorna todas as marcas cadastradas 
 	public List<Brand> findAll(){
 		List<Brand> list = new ArrayList<>();
 		String sql = "SELECT * FROM brands";
