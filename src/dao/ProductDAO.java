@@ -38,8 +38,19 @@ public class ProductDAO {
 
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+			
+			// Erro 1062: Código de barras duplicado (coluna UNIQUE)
+				if (e.getErrorCode() == 1062 || "23000".equals(e.getSQLState())) {
+					throw new RuntimeException("Não foi possível cadastrar: O código de barras '" + product.getBarcode() + "' já está cadastrado!");
+					}
+				
+				// Erro 1452: Tentar inserir um brand_id que não existe na tabela de marcas
+				if (e.getErrorCode() == 1452) {
+					throw new RuntimeException("Não foi possível cadastrar: A marca associada (ID: " + product.getBrand().getId() + ") não existe.");
+					}
+				
+				throw new RuntimeException("Erro inesperado ao tentar salvar o produto no banco de dados.", e);
+					}
 	}
 
 	// Retorna todos os PRODUTOS/products cadastrados
@@ -71,17 +82,19 @@ public class ProductDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Erro ao buscar a lista de produtos no sistema.", e);
 		}
 
 		return list;
 	}
 
 	// Busca um produto específico pelo ID
-	public Product findByid(int id) {
-		String sql = "SELECT p.id AS product_id, p.barcode, p.name AS product_name, p.price "
-				+ "b.id AS brand_id, b.name As brand_name " + "FROM products p "
-				+ "INNER JOIN brands b ON p.barnd = b.id " + "WHER p.id = ?";
+	public Product findByID(int id) {
+		String sql = "SELECT p.id AS product_id, p.barcode, p.name AS product_name, p.price, "
+				+ "b.id AS brand_id, b.name As brand_name " 
+				+ "FROM products p "
+				+ "INNER JOIN brands b ON p.barnd_id = b.id " 
+				+ "WHERE p.id = ?";
 		Product product = null;
 
 		try (Connection conn = DatabaseConnection.getConnection();
@@ -105,7 +118,7 @@ public class ProductDAO {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Erro ao buscar o produto com o ID: " + id, e);
 		}
 		return product;
 	}
@@ -140,7 +153,7 @@ public class ProductDAO {
 			}
 			
 		}catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Erro ao buscar o produto com o código de barras: " + barcode, e);
 		}
 		return product;
 	}
@@ -160,8 +173,18 @@ public class ProductDAO {
 			
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+			
+			// Impede clonar o código de barras de outro produto existente na alteração
+			if (e.getErrorCode() == 1062 || "23000".equals(e.getSQLState())) {
+				throw new RuntimeException("Não foi possível atualizar: O código de barras '" + product.getBarcode() + "' já pertence a outro produto!");
+				}
+					
+			if (e.getErrorCode() == 1452) {
+				throw new RuntimeException("Não foi possível atualizar: A nova marca informada (ID: " + product.getBrand().getId() + ") não foi encontrada.");
+				}
+						
+			throw new RuntimeException("Erro ao tentar atualizar os dados do produto de ID: " + product.getId(), e);
+				}	
 	}
 	
 	// Deleta um produto pelo ID
@@ -174,7 +197,13 @@ public class ProductDAO {
 			pstmt.setInt(1, id);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+			
+			// Erro 1451: Impede a exclusão se houver algum lote atrelado a este produto
+			if (e.getErrorCode() == 1451 || "23503".equals(e.getSQLState())) {
+				throw new RuntimeException("Não é possível excluir o produto. Existem lotes ativos associados a ele no estoque.");
+				}
+						
+			throw new RuntimeException("Erro ao tentar deletar o produto de ID: " + id, e);
+					}
 	}
 }

@@ -45,11 +45,9 @@ public static void initializeDatabase() {
             stmt.execute(sqlProducts);
             stmt.execute(sqlBatches);
 
-            System.out.println("Estrutura do banco de dados verificada/criada com sucesso!");
-
         } catch (SQLException e) {
-            System.out.println("Erro crítico ao inicializar as tabelas do banco de dados.");
-            e.printStackTrace();
-        }
+        	throw new RuntimeException("FALHA CRÍTICA: Não foi possível inicializar a estrutura do banco de dados. "
+					+ "Verifique o arquivo do banco ou as permissões de escrita.", e);
+		}
     }
 }
